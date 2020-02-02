@@ -1,0 +1,10 @@
+[unit]
+Description=Controller For Onboard Raspberry Pi Fan
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /usr/local/bin/fan-service
+
+[Install]
+WantedBy=multi-user.target
+

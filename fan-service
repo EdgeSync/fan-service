@@ -1,0 +1,49 @@
+#!/bin/bash
+
+main() {
+if [[ $1 = "start" ]];
+then
+	setup 2&>1
+	on 2&>1 
+fi
+
+
+if [[ $1 = "stop" ]];
+then
+	off 2&>1
+fi
+}
+
+on() {
+echo "1" > /sys/class/gpio/gpio21/value
+}
+
+off() {
+echo "0" > /sys/class/gpio/gpio21/value
+}
+
+setup() {
+echo "21" > /sys/class/gpio/export
+echo "out" > /sys/class/gpio/gpio21/direction
+echo "1" > /sys/class/gpio/gpio21/value
+}
+
+check_temp(){
+temp=$(cat /sys/class/thermal/thermal_zone0/temp)
+if [ $temp -ge 50000 ]
+then
+	main start
+elif [ $temp -lt 45000 ]
+then
+	main stop
+fi
+
+}
+
+active=1
+while [[ $active -eq 1 ]]
+do 
+	check_temp
+	sleep 5
+done
+
